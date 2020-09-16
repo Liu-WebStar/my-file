@@ -1,0 +1,60 @@
+<!-- ajax demo -->
+<!-- 前端 demo1 -->
+<form action="/admin/test">
+    <!-- /admin/test即接口路径 -->
+    <input type="text" name="a" value="1">
+    <input type="text" name="b" value="2">
+    <input type="text" name="c" value="3">
+    <!-- 这里输入框的name和value即是入参，此处表示a=1&b=2&c=3 -->
+    <input type="submit" value="提交"> 
+    <!-- submit按钮会触发form的action接口 form表单提交时网址会直接跳转到action的接口地址，通常后端需要在此接口返回一个html页面而不是json -->
+</form>
+<script>
+    /* 前端 demo2 */
+    // 原生js-get
+    var xhr=new XMLHttpRequest();
+    xhr.open('get','/admin/test?a=1&b=2&c=3');  // /admin/test即接口路径，a=1&b=2&c=3即接口的入参
+    xhr.send(null); // 发送ajax
+    xhr.onreadystatechange=function(){
+        if(xhr.readyState==4 && xhr.status==200){
+            var res_json=xhr.responseText;  // 后端返回的json字符串
+            var obj=JSON.parse(res_json);   // 把json转为数组或对象
+        }
+    }
+    /* 前端 demo3 */
+    // 原生js-post
+    var xhr=new XMLHttpRequest();
+    xhr.open('post','/admin/test');  // /admin/test即接口路径
+    xhr.send('a=1&b=2&c=3'); // a=1&b=2&c=3即接口的入参
+    xhr.onreadystatechange=function(){
+        if(xhr.readyState==4 && xhr.status==200){
+            var res_json=xhr.responseText;  // 后端返回的json字符串
+            var obj=JSON.parse(res_json);   // 把json转为数组或对象
+        }
+    }
+    /* 前端 demo4 */
+    // jquery发ajax
+    $.ajax({
+        type:'get', // 或post
+        url:'/admin/test',  // 接口路径
+        data:'a=1&b=2&c=3', // 接口的入参
+        success:function(res_json){ // 后端返回的json字符串
+            var obj=JSON.parse(res_json);   // 把json转为数组或对象
+        }
+    })
+
+    /* 模拟后端接口 /admin/test */
+    app.get('/admin/test',function(req,res){
+        var query=req.query;    // 接收参数
+        var a=query.a;    // 接收参数a
+        var b=query.b;    // 接收参数b
+        var c=query.c;    // 接收参数c
+        var obj=[   // 定义出参 可以是字符串或数组或对象
+            {a:1},
+            {a:2},
+            {a:3}
+        ];
+        res.send(JSON.stringify(obj));  // 把出参返回给前端
+        // 网络只能传输字符串，所以要把数组或对象转为json(json就是字符串)
+    })
+</script>
